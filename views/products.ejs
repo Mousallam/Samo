@@ -12,11 +12,13 @@
   <h1>Our Products</h1>
   <div class="card-container">
     <% products.forEach(function(product) { %>
-      <div class="card">
-        <img src="<%= product.image %>" alt="<%= product.name %>" />
-        <h3><%= product.name %></h3>
-        <p>$<%= product.price.toFixed(2) %></p>
-      </div>
+      <a href="/product/<%= product.id %>" class="card-link">
+        <div class="card">
+          <img src="<%= product.image %>" alt="<%= product.name %>" />
+          <h3><%= product.name %></h3>
+          <p>$<%= product.price.toFixed(2) %></p>
+        </div>
+      </a>
     <% }); %>
   </div>
 </body>
