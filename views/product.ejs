@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= product.name %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <%- include('partials/header'); %>
+  <div class="product-detail">
+    <img src="<%= product.image %>" alt="<%= product.name %>">
+    <h1><%= product.name %></h1>
+    <p class="description"><%= product.description %></p>
+    <p class="price">$<%= product.price.toFixed(2) %></p>
+    <form method="POST" action="/add-to-cart/<%= product.id %>">
+      <button type="submit">Add to Cart</button>
+    </form>
+  </div>
+</body>
+</html>

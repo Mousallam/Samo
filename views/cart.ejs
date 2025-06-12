@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Cart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <%- include('partials/header'); %>
+  <h1>Your Cart</h1>
+  <% if (cart.length === 0) { %>
+    <p style="text-align:center">Your cart is empty.</p>
+  <% } else { %>
+    <ul class="cart-list">
+      <% cart.forEach(function(item) { %>
+        <li><%= item.name %> - $<%= item.price.toFixed(2) %> (x<%= item.quantity %>)</li>
+      <% }) %>
+    </ul>
+  <% } %>
+</body>
+</html>
