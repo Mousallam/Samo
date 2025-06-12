@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Grocery Store</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>Welcome to the Grocery Store</h1>
+  <ul>
+    <% products.forEach(function(product) { %>
+      <li>
+        <strong><%= product.name %></strong> - $<%= product.price.toFixed(2) %>
+      </li>
+    <% }); %>
+  </ul>
+</body>
+</html>
