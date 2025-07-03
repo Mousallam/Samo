@@ -1,0 +1,22 @@
+\section{Project Overview}
+This project is a sample grocery store web application built with Node.js and Express.\newline
+It uses EJS templates for rendering pages and SQLite for storing user accounts.
+
+\section{Setup}
+\begin{enumerate}
+  \item Install dependencies with:\newline
+  \verb|npm install|
+  \item Copy \verb|.env.example| to \verb|.env| and fill in the variables.
+  \item Start the server with:\newline
+  \verb|npm start|
+  \item Visit \verb|http://localhost:3000| in your browser.
+\end{enumerate}
+
+\section{Security Enhancements}
+\begin{itemize}
+  \item Sensitive configuration kept in \verb|.env| which is ignored by Git.
+  \item HTTP security headers provided by the \verb|helmet| middleware.
+  \item Session cookies are marked \verb|httpOnly| and can be \verb|secure| in production.
+  \item Passwords are hashed using \verb|bcrypt|.
+  \item Payment processing is disabled if the Stripe key is missing.
+\end{itemize}

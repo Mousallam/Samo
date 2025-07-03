@@ -16,12 +16,13 @@ Start the server:
 npm start
 ```
 
-Before starting, create a `.env` file in the project root. Place your Stripe
-secret key in this file and set a session secret key. A template is provided and
-already committed to the repository:
+Before starting, copy the provided `.env.example` to `.env` and fill in the
+environment variables. The `.env` file should **not** be committed to source
+control. You may optionally create a `.env.local` for personal settings:
 
 ```bash
-cp .env .env.local  # optionally create a local copy
+cp .env.example .env
+cp .env .env.local  # optional local copy
 ```
 
 Edit `.env` (or `.env.local`) and fill in the following values:

@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const helmet = require('helmet');
 const bcrypt = require('bcrypt');
 const sqlite3 = require('sqlite3').verbose();
 const Stripe = require('stripe');
@@ -8,7 +9,11 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY || '');
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+if (!stripeKey) {
+  console.warn('STRIPE_SECRET_KEY not set. Payments will be disabled.');
+}
+const stripe = stripeKey ? Stripe(stripeKey) : null;
 
 // Initialize SQLite database
 const db = new sqlite3.Database(path.join(__dirname, 'db.sqlite'));
@@ -22,11 +27,16 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'grocery-secret',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production'
+    }
   })
 );
 
@@ -182,6 +192,9 @@ app.get('/checkout', (req, res) => {
 app.post('/checkout', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
+  }
+  if (!stripe) {
+    return res.status(500).send('Payment configuration missing');
   }
   const { cardNumber, expMonth, expYear, cvc } = req.body;
   const amount = (req.session.cart || []).reduce(
