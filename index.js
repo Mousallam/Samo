@@ -32,9 +32,8 @@ app.use(
 
 // expose user to views
 app.use((req, res, next) => {
-  if (req.session.user) {
-    res.locals.user = req.session.user;
-  }
+  // Make the logged in user available to all views
+  res.locals.user = req.session.user || null;
   next();
 });
 
