@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <%- include('partials/header'); %>
+  <h1>Checkout</h1>
+  <form class="payment-form" method="POST" action="/checkout">
+    <label>Name on Card
+      <input type="text" name="name" required>
+    </label>
+    <label>Card Number
+      <input type="text" name="cardNumber" required placeholder="4242424242424242">
+    </label>
+    <label>Expiry Month
+      <input type="text" name="expMonth" required placeholder="12">
+    </label>
+    <label>Expiry Year
+      <input type="text" name="expYear" required placeholder="2030">
+    </label>
+    <label>CVC
+      <input type="text" name="cvc" required placeholder="123">
+    </label>
+    <button type="submit">Pay</button>
+  </form>
+</body>
+</html>

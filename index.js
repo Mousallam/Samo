@@ -1,9 +1,21 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const bcrypt = require('bcrypt');
+const sqlite3 = require('sqlite3').verbose();
+const Stripe = require('stripe');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY || '');
+
+// Initialize SQLite database
+const db = new sqlite3.Database(path.join(__dirname, 'db.sqlite'));
+db.serialize(() => {
+  db.run(
+    'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, password TEXT)'
+  );
+});
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -11,11 +23,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
-    secret: 'grocery-secret',
+    secret: process.env.SESSION_SECRET || 'grocery-secret',
     resave: false,
     saveUninitialized: true
   })
 );
+
+// expose user to views
+app.use((req, res, next) => {
+  if (req.session.user) {
+    res.locals.user = req.session.user;
+  }
+  next();
+});
 
 const products = [
   {
@@ -101,6 +121,95 @@ app.post('/add-to-cart/:id', (req, res) => {
 app.get('/cart', (req, res) => {
   const cart = req.session.cart || [];
   res.render('cart', { cart });
+});
+
+app.get('/signup', (req, res) => {
+  res.render('signup');
+});
+
+app.post('/signup', async (req, res) => {
+  const { username, password } = req.body;
+  const hashed = await bcrypt.hash(password, 10);
+  db.run(
+    'INSERT INTO users (username, password) VALUES (?, ?)',
+    [username, hashed],
+    err => {
+      if (err) {
+        return res.status(400).send('User already exists');
+      }
+      req.session.user = { username };
+      res.redirect('/');
+    }
+  );
+});
+
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  db.get('SELECT * FROM users WHERE username = ?', [username], async (err, row) => {
+    if (err || !row) {
+      return res.status(400).send('Invalid credentials');
+    }
+    const match = await bcrypt.compare(password, row.password);
+    if (!match) {
+      return res.status(400).send('Invalid credentials');
+    }
+    req.session.user = { id: row.id, username: row.username };
+    res.redirect('/');
+  });
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/');
+  });
+});
+
+app.get('/checkout', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  const cart = req.session.cart || [];
+  if (cart.length === 0) {
+    return res.redirect('/cart');
+  }
+  res.render('checkout');
+});
+
+app.post('/checkout', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  const { cardNumber, expMonth, expYear, cvc } = req.body;
+  const amount = (req.session.cart || []).reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  stripe.charges
+    .create({
+      amount: Math.round(amount * 100),
+      currency: 'usd',
+      source: {
+        object: 'card',
+        number: cardNumber,
+        exp_month: expMonth,
+        exp_year: expYear,
+        cvc
+      },
+      description: 'Grocery purchase'
+    })
+    .then(() => {
+      req.session.cart = [];
+      res.send('Payment successful');
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Payment failed');
+    });
 });
 
 app.listen(PORT, () => {

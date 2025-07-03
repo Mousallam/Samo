@@ -4,5 +4,12 @@
     <a href="/products">Products</a>
     <a href="/contact">Contact</a>
     <a href="/cart">Cart</a>
+    <% if (!user) { %>
+      <a href="/login">Login</a>
+      <a href="/signup">Sign Up</a>
+    <% } else { %>
+      <span class="welcome">Hi, <%= user.username %></span>
+      <a href="/logout">Logout</a>
+    <% } %>
   </nav>
 </header>

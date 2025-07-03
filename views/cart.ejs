@@ -14,10 +14,18 @@
     <p style="text-align:center">Your cart is empty.</p>
   <% } else { %>
     <ul class="cart-list">
+      <% let total = 0; %>
       <% cart.forEach(function(item) { %>
+        <% total += item.price * item.quantity; %>
         <li><%= item.name %> - $<%= item.price.toFixed(2) %> (x<%= item.quantity %>)</li>
       <% }) %>
     </ul>
+    <p style="text-align:center;font-weight:bold">Total: $<%= total.toFixed(2) %></p>
+    <div style="text-align:center;margin:1rem;">
+      <form action="/checkout" method="GET">
+        <button type="submit">Proceed to Checkout</button>
+      </form>
+    </div>
   <% } %>
 </body>
 </html>

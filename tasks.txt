@@ -1,0 +1,17 @@
+# Setup Tasks
+
+1. Set the environment variables before running the app:
+   - `STRIPE_SECRET_KEY` – your Stripe secret key for Visa payments.
+   - `SESSION_SECRET` – any random string to secure sessions.
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the server:
+   ```bash
+   npm start
+   ```
+
+4. A SQLite database file `db.sqlite` will be created automatically in the project root for storing user accounts.
