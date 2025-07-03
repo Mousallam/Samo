@@ -4,6 +4,7 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const sqlite3 = require('sqlite3').verbose();
 const Stripe = require('stripe');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;

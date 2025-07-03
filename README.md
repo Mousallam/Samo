@@ -16,11 +16,19 @@ Start the server:
 npm start
 ```
 
-Before starting, set environment variables for Stripe payments and sessions:
+Before starting, create a `.env` file in the project root. Place your Stripe
+secret key in this file and set a session secret key. A template is provided and
+already committed to the repository:
 
 ```bash
-export STRIPE_SECRET_KEY=your_stripe_secret_key
-export SESSION_SECRET=your_session_secret
+cp .env .env.local  # optionally create a local copy
+```
+
+Edit `.env` (or `.env.local`) and fill in the following values:
+
+```ini
+STRIPE_SECRET_KEY=your_stripe_secret_key
+SESSION_SECRET=grocery-secret
 ```
 
 The application will create a SQLite file `db.sqlite` to store user accounts on first run.
