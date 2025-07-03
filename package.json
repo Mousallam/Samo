@@ -12,11 +12,12 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "bcrypt": "^5.1.0",
+    "dotenv": "^17.0.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-session": "^1.17.3",
     "sqlite3": "^5.1.6",
-    "bcrypt": "^5.1.0",
     "stripe": "^12.15.0"
   }
 }
